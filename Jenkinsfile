@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        PYTHON = 'py -3'
+    }
+
     stages {
         stage('Build') {
             steps {
@@ -12,7 +16,7 @@ pipeline {
         stage('Compile') {
             steps {
                 echo 'Checking Python syntax'
-                bat 'python -m py_compile app.py'
+                bat '%PYTHON% -m py_compile app.py'
             }
         }
 
@@ -20,7 +24,7 @@ pipeline {
             steps {
                 echo 'Running Flask route smoke tests'
                 bat '''
-python -c "from app import app; client = app.test_client(); assert client.get('/').status_code == 200; assert client.post('/register', data={'name': 'Test', 'email': 'test@example.com', 'password': 'secret', 'event': 'Demo'}).status_code == 200"
+%PYTHON% -c "from app import app; client = app.test_client(); assert client.get('/').status_code == 200; assert client.post('/register', data={'name': 'Test', 'email': 'test@example.com', 'password': 'secret', 'event': 'Demo'}).status_code == 200"
 '''
             }
         }
