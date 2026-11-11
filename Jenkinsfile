@@ -13,6 +13,20 @@ pipeline {
             }
         }
 
+        stage('Compile') {
+            steps {
+                echo 'Checking Python syntax'
+                bat '%PYTHON% -m py_compile app.py'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Running Flask route smoke tests'
+                bat '%PYTHON% app.py'
+            }
+        }
+    }
 
     post {
         success {
